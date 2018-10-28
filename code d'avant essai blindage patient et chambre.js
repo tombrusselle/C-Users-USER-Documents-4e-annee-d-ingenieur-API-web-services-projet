@@ -17,44 +17,46 @@ var db = mysql.createConnection({
 
 
 
-//-----------------------------------------------jeton / parfeu -----------------------
-//utillisateur tom
-//apikey       tomtom
-
-
-/*Implémentez un jeton ayant pour valeur “ceciestmonjeton​” afin d’accéder au service Web de
-manière plus sécurisé.
-Si le jeton n’est pas fourni où est incorrect, lancez une erreur HTTP 403.*/
-
-/*app.use(function(req, res, next) {
-	if ("key" in req.query) {
-		var key = req.query["key"];
-		key=SHA512(key);
-		console.log(key);
-		var query = "SELECT * FROM pare_feu WHERE apikey='" + key + "'";
+/*app.post('/patient', function(req, res) 
+{
+	var nom = req.body.nom;
+	var prenom = req.body.prenom;
+	var date_naissance = req.body.date_naissance;
+	var date_entre = req.body.date_entre;
+	var id_chambre = req.body.id_chambre;
+	var nb_patient=100;
+	var capacite=0;
+		//on regarde l'id de la chambre selectionné
+		var query = "SELECT capacite FROM chambre WHERE id_chambre='"+id_chambre+"'";
 		db.query(query, function(err, result, fields) {
-			if (err) throw err;
-			if (result.length > 0) {
-				next();
-			}
-			else {
-				res.send("Access denied");
-			}
+		if (err) throw err;	
+
+		
+		capacite = result[0].capacite;
 		});
-	} else {
-		res.send("Access denied");
-	}
-});
-*/
 
+		//combien de patient dans la chambre
+		var query = "SELECT COUNT(*) FROM patient WHERE id_chambre='"+id_chambre+"'";
+		db.query(query, function(err, result, fields) {
+		if (err) throw err;
 
-
-
-
-
-
-
-
+		nb_patient = result[0];//ici la faute
+		});
+		//si la capacite n'est pas atteinte
+		if (nb_patient < capacite) 
+		{
+			var query = "INSERT INTO patient (nom,prenom,date_naissance,date_entre,id_chambre) VALUES ('" + nom+ "','" + prenom+ "','" +date_naissance+ "','" +date_entre+ "','" +id_chambre+ "')";
+			db.query(query, function(err, result, fields) {
+			if (err) throw err;
+			res.send(JSON.stringify("Success"));
+			});
+		}
+		else 
+		{
+			res.send(JSON.stringify("Capacité dépassé"));
+		}
+		
+});*/
 
 
 
@@ -97,11 +99,13 @@ app.get('/filtre/:id', function(req, res) {
 });
 
 
-    //--------------------------partie filtre dans filtre (lol)------------
+    //--------------------------partie filtre dans filtre lol------------
 
 
 app.get('/filtre', function(req,res)
 {
+
+
 
 		//filtre de pagination : 
 		//postma: http://localhost:3000/filtre?limit=1
