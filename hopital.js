@@ -99,7 +99,20 @@ app.get('/filtre/:id', function(req, res) {
 
     //--------------------------partie filtre dans filtre (lol)------------
 
+//Créez une route /filter-stats en lecture uniquement qui affiche combien de temps il reste avantqu’il ne faille changer le filtre pour chacune des chambres.
+app.get('/filter-stats', function(req, res) {
+	db.query("SELECT chambre.seuil_critique, filtre.qualite, filtre.perte_qualite FROM Chambre, Filtre WHERE chambre.id_filtre = filtre.id_filtre", function(err, result, fields) {
+		if(err) throw err;
+		var response = { result };
+		res.send(JSON.stringify(response));
+		for(let i=0; i<result.length; i++) {
+			let calcul = (result[i]["qualite"] - result[i]["seuil_critique"]) / result[i]["perte_qualite"]; //tableaux associatifs
+			console.log(calcul);    		
+    	};		
+	});
+});
 
+//-------------------------------//
 app.get('/filtre', function(req,res)
 {
 
